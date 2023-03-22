@@ -30,6 +30,8 @@ def getFilmData(request):
 
         url = env('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"+film_date+"/"
 
+        print(url)
+
         r = requests.get(url)
         soup = bs(r.content, features="html.parser")
 
