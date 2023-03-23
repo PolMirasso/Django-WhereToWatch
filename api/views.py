@@ -6,9 +6,14 @@ from bs4 import BeautifulSoup as bs
 from django.http import JsonResponse
 import json
 import environ
-env = environ.Env()
-environ.Env.read_env()
+from pathlib import Path
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+# reading .env file
+env = environ.Env(DEBUG=(bool, False))
+env_file = os.path.join(BASE_DIR, ".env")
+environ.Env.read_env(env_file)
 
 
 # Create your views here.
