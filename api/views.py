@@ -189,7 +189,17 @@ def getAllData(request):
     return JsonResponse(json_list,safe=False,json_dumps_params={'ensure_ascii':False})
 
 
+def getRecommendedFilms(requests):
+
+    url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language=es-ES&page=1"
+
+    response=requests.get(url).json()
+
+    print(response)
+
+    data = response.json()['results']
+
+    print(data)
 
 
-
- 
+    return HttpResponse(":D")
