@@ -5,6 +5,5 @@ urlpatterns = [
     path('getAllData/', views.getAllData, name="getAllData"),
     path('getFilmData/', views.getFilmData, name="getFilmData"),
     path('getCinemaData/', views.getCinemaData, name="getCinemaData"),
-    path('getRecommendedFilms/', views.getRecommendedFilms, name="getRecommendedFilms"),
-    path('', views.index, name="index")
+    path('getTopRatedFilms/', views.getTopRatedFilms, name="getTopRatedFilms"),
 ]

@@ -19,10 +19,6 @@ environ.Env.read_env(env_file)
 # Create your views here.
 
 
-def index(request):
-    print(env("Scraping_URL"))
-    return HttpResponse("inici")
-
 def getFilmData(request):
     
 
@@ -189,17 +185,27 @@ def getAllData(request):
     return JsonResponse(json_list,safe=False,json_dumps_params={'ensure_ascii':False})
 
 
-def getRecommendedFilms(requests):
+def getTopRatedFilms(request):
 
-    url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language=es-ES&page=1"
-
-    response=requests.get(url).json()
-
-    print(response)
-
-    data = response.json()['results']
-
-    print(data)
+    if request.method == 'POST':
 
 
-    return HttpResponse(":D")
+        num_page = request.POST['num_page']
+        language = request.POST['language']
+
+        print(language)
+
+        url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
