@@ -209,3 +209,94 @@ def getTopRatedFilms(request):
             api = {"error": str(e)}
 
         return JsonResponse(api, safe=False)
+
+def getPopularFilms(request):
+
+    if request.method == 'POST':
+
+
+        num_page = request.POST['num_page']
+        language = request.POST['language']
+
+        print(language)
+
+        url = env("API_URL")+"/3/movie/popular?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
+
+
+def getFilmData(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
+    
+
+def getSimilarMovie(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+        page_num = request.POST['page_num']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"/similar/?api_key="+env('API_KEY')+"&language="+language+"&page="+page_num
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
+    
+
+def getProviders(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"/watch/providers?api_key="+env('API_KEY')+"&language="+language
+
+        print(url)
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
