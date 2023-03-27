@@ -300,3 +300,65 @@ def getProviders(request):
             api = {"error": str(e)}
 
         return JsonResponse(api, safe=False)
+
+
+def getAlternativeTitles(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+      
+        url = env("API_URL")+"/3/movie/"+movie_id+"/alternative_titles?api_key="+env('API_KEY')
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
+    
+def getMovieRecommendations(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        page = request.POST['page']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"/recommendations?api_key="+env('API_KEY')+"&language="+language+"&page="+page
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
+    
+
+def getMovieVideos(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"/videos?api_key="+env('API_KEY')+"&language="+language
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"id": movie["id"], "name": movie["name"], "video": "https://youtu.be/"+movie["key"]} for movie in api["results"]]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False)
