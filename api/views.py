@@ -193,6 +193,7 @@ def getTopRatedFilms(request):
         num_page = request.POST['num_page']
         language = request.POST['language']
 
+        print(num_page)
         print(language)
 
         url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
@@ -207,8 +208,9 @@ def getTopRatedFilms(request):
             api = movies
         except Exception as e:
             api = {"error": str(e)}
+            
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
 
-        return JsonResponse(api, safe=False)
 
 def getPopularFilms(request):
 
@@ -233,7 +235,7 @@ def getPopularFilms(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
 
 
 def getFilmData(request):
@@ -254,7 +256,7 @@ def getFilmData(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
 
 def getSimilarMovie(request):
@@ -276,7 +278,7 @@ def getSimilarMovie(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
 
 def getProviders(request):
@@ -299,7 +301,7 @@ def getProviders(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
 
 
 def getAlternativeTitles(request):
@@ -319,7 +321,7 @@ def getAlternativeTitles(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
 def getMovieRecommendations(request):
 
@@ -339,7 +341,7 @@ def getMovieRecommendations(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
 
 def getMovieVideos(request):
@@ -361,5 +363,5 @@ def getMovieVideos(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api, safe=False)
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
