@@ -1,1 +1,1 @@
-web: gunicorn WhereToWatch.wsgi --log-file -
+web: gunicorn Django-WhereToWatch.WhereToWatch.wsgi --log-file -
