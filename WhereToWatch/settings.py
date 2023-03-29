@@ -33,7 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 # Application definition
 
 INSTALLED_APPS = [
@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddlewate',
 ]
 
 CORS_ALLOWED_ORIGINS = [
