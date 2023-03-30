@@ -16,7 +16,7 @@ env_file = os.path.join(BASE_DIR, ".env")
 environ.Env.read_env(env_file)
 
 
-# Create your views here.
+# Scrapping
 
 
 def getFilmData(request):
@@ -184,6 +184,7 @@ def getAllData(request):
     json_list = list(dades_pelicules)   
     return JsonResponse(json_list,safe=False,json_dumps_params={'ensure_ascii':False})
 
+#API Manager
 
 def getTopRatedFilms(request):
 
