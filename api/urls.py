@@ -12,4 +12,5 @@ urlpatterns = [
     path('getAlternativeTitles/', views.getAlternativeTitles, name="getAlternativeTitles"),
     path('getMovieRecommendations/', views.getMovieRecommendations, name="getMovieRecommendations"),
     path('getMovieVideos/', views.getMovieVideos, name="getMovieVideos"),
+    path('getSearchResults/', views.getSearchResults, name="getSearchResults"),
 ]

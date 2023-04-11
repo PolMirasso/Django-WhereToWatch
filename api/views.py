@@ -366,3 +366,25 @@ def getMovieVideos(request):
 
         return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
     
+    
+
+def getSearchResults(request):
+
+    if request.method == 'POST':
+
+        movie_name = request.POST['movie_name']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/search/movie?api_key="+env('API_KEY')+"&language="+language+"&query="+movie_name+"&page=1&include_adult=false"
+        headers = {'Accept': 'application/json'}
+       
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"id": movie["id"], "name": movie["name"]} for movie in api["results"]]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
