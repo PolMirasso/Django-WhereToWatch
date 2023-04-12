@@ -197,7 +197,7 @@ def getTopRatedFilms(request):
         print(num_page)
         print(language)
 
-        url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
+        url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -224,6 +224,30 @@ def getPopularFilms(request):
         print(language)
 
         url = env("API_URL")+"/3/movie/popular?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+
+def getUpcomingFilms(request):
+
+    if request.method == 'POST':
+
+        num_page = request.POST['num_page']
+        language = request.POST['language']
+
+        print(language)
+
+        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -388,3 +412,47 @@ def getSearchResults(request):
             api = {"error": str(e)}
 
         return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+
+
+def getGenres(request):
+
+    if request.method == 'POST':
+
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/genre/movie/list?api_key="+env('API_KEY')+"&language="+language
+        headers = {'Accept': 'application/json'}
+       
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+
+
+def getMoviesByGenre(request):
+
+    if request.method == 'POST':
+
+        language = request.POST['language']
+        page = request.POST['page']
+        genres_id = request.POST['genres_id']
+
+        url = env("API_URL")+"/3/discover/movie?api_key="+env('API_KEY')+"&with_genres="+genres_id+"&language="+language+"&page="+page
+        headers = {'Accept': 'application/json'}
+       
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            api = movies
+         
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+    

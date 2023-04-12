@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('getAllData/', views.getAllData, name="getAllData"),
+    #path('getAllData/', views.getAllData, name="getAllData"),
     path('getFilmData/', views.getFilmData, name="getFilmData"),
     path('getCinemaData/', views.getCinemaData, name="getCinemaData"),
     path('getTopRatedFilms/', views.getTopRatedFilms, name="getTopRatedFilms"),
@@ -13,4 +13,7 @@ urlpatterns = [
     path('getMovieRecommendations/', views.getMovieRecommendations, name="getMovieRecommendations"),
     path('getMovieVideos/', views.getMovieVideos, name="getMovieVideos"),
     path('getSearchResults/', views.getSearchResults, name="getSearchResults"),
+    path('getUpcomingFilms/', views.getUpcomingFilms, name="getUpcomingFilms"),
+    path('getGenres/', views.getGenres, name="getGenres"),
+    path('getMoviesByGenre/', views.getMoviesByGenre, name="getMoviesByGenre"),
 ]
