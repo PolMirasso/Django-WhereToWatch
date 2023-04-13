@@ -353,7 +353,7 @@ def getMovieRecommendations(request):
     if request.method == 'POST':
 
         movie_id = request.POST['movie_id']
-        page = request.POST['page']
+        page = request.POST['num_page']
         language = request.POST['language']
 
         url = env("API_URL")+"/3/movie/"+movie_id+"/recommendations?api_key="+env('API_KEY')+"&language="+language+"&page="+page
@@ -438,7 +438,7 @@ def getMoviesByGenre(request):
     if request.method == 'POST':
 
         language = request.POST['language']
-        page = request.POST['page']
+        page = request.POST['num_page']
         genres_id = request.POST['genres_id']
 
         url = env("API_URL")+"/3/discover/movie?api_key="+env('API_KEY')+"&with_genres="+genres_id+"&language="+language+"&page="+page
