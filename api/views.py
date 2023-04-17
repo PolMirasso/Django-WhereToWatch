@@ -217,7 +217,6 @@ def getPopularFilms(request):
 
     if request.method == 'POST':
 
-
         num_page = request.POST['num_page']
         language = request.POST['language']
 
@@ -247,9 +246,7 @@ def getUpcomingFilms(request):
 
         print(language)
 
-        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="    +language
-
-        print(url)
+        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
 
         headers = {'Accept': 'application/json'}
 
