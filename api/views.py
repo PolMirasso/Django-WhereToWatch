@@ -247,7 +247,9 @@ def getUpcomingFilms(request):
 
         print(language)
 
-        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
+        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="    +language
+
+        print(url)
 
         headers = {'Accept': 'application/json'}
 
