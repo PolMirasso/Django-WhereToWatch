@@ -254,7 +254,9 @@ def getUpcomingFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"],"popularity": movie["popularity"], "release_date": movie["release_date"],  "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"],"backdrop_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["backdrop_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "title": movie["title"],"popularity": movie["popularity"], "release_date": movie["release_date"],  
+            "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
+            "backdrop_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+str(movie["backdrop_path"])} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
