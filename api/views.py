@@ -205,7 +205,7 @@ def getTopRatedFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_count": movie["vote_count"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
@@ -232,7 +232,7 @@ def getPopularFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_count": movie["vote_count"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
@@ -256,7 +256,7 @@ def getUpcomingFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_count": movie["vote_count"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
                     "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
                     "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
                     for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
@@ -452,7 +452,7 @@ def getMoviesByGenre(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "vote_count": movie["vote_count"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
          
         except Exception as e:
