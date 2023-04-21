@@ -53,4 +53,4 @@ class LoginAPI(KnoxLoginView):
         temp_list.data["age"]=user_age
         temp_list.data["image_profile"]=user_image_profile
 
-        return Response({"user":temp_list.data})
+        return Response(temp_list.data)
