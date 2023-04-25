@@ -6,7 +6,10 @@ from django.contrib.auth import login
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from knox.auth import TokenAuthentication
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -47,3 +50,9 @@ class LoginAPI(KnoxLoginView):
     
         return Response(temp_list.data)
  
+class VerifyTokenView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        return Response({'success': 'El token es válido.'})
