@@ -411,7 +411,11 @@ def getSearchResults(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"id": movie["id"], "original_title": movie.get("original_title", movie.get("original_name"))} for movie in api["results"]]
+        
+            movies = [{"id": movie["id"], "original_title": movie["original_title"] if "original_title" in movie else None, "original_name": movie["original_name"] if "original_name" in movie else None} for movie in api["results"]]
+
+
+            api["results"]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
