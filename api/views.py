@@ -403,17 +403,19 @@ def getSearchResults(request):
         movie_name = request.POST['movie_name']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/search/multi?api_key="+env('API_KEY')+"&language="+language+"&query="+movie_name+"&page=1&include_adult=false"
+        url = env("API_URL")+"/3/search/multi?api_key="+env('API_KEY')+"&language="+language+"&page=1&include_adult=false&query="+movie_name
+        print(url)
         headers = {'Accept': 'application/json'}
        
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"id": movie["id"], "original_title": movie["original_title"]} for movie in api["results"]]
+            movies = [{"id": movie["id"], "original_title": movie.get("original_title", movie.get("original_name"))} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
+
 
         return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
 
