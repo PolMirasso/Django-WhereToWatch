@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     #path('getAllData/', views.getAllData, name="getAllData"),
+    path('getFilmDataCinema/', views.getFilmDataCinema, name="getFilmDataCinema"),
     path('getFilmData/', views.getFilmData, name="getFilmData"),
     path('getCinemaData/', views.getCinemaData, name="getCinemaData"),
     path('getTopRatedFilms/', views.getTopRatedFilms, name="getTopRatedFilms"),

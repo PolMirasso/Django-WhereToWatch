@@ -19,7 +19,7 @@ environ.Env.read_env(env_file)
 # Scrapping
 
 
-def getFilmData(request):
+def getFilmDataCinema(request):
     
 
     if request.method == 'POST':
@@ -304,6 +304,11 @@ def getSimilarMovie(request):
 
         try:
             api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
+                    "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
+                    "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
+                    for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
+            api = movies
         except Exception as e:
             api = {"error": str(e)}
 
