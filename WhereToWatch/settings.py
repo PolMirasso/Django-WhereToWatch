@@ -35,7 +35,7 @@ environ.Env.read_env(env_file)
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -165,7 +165,7 @@ REST_FRAMEWORK = {
 }
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
+    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
     'CLOUDINARY_API_KEY': env('CLOUDINARY_API_KEY'),
     'CLOUDINARY_API_SECRET': env('CLOUDINARY_API_SECRET'),
     'secure': True
