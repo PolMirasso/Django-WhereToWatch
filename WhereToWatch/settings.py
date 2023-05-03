@@ -171,8 +171,8 @@ CLOUDINARY_STORAGE = {
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+# MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
      os.path.join(BASE_DIR, 'static'),
