@@ -296,8 +296,7 @@ def getSimilarMovie(request):
         language = request.POST['language']
         page_num = request.POST['page_num']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"/similar/?api_key="+env('API_KEY')+"&language="+language+"&page="+page_num
-
+        url = env("API_URL")+"/3/movie/"+movie_id+"/similar?api_key="+env('API_KEY')+"&language="+language+"&page="+page_num
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
