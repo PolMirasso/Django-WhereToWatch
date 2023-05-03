@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 from .models import data_user
 import os
 from django.conf import settings
-import os
-from django.conf import settings
+
 
 import string
 import random
