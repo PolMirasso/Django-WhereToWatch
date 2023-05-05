@@ -20,16 +20,11 @@ environ.Env.read_env(env_file)
 
 
 def getFilmDataCinema(request):
-    
-
     if request.method == 'POST':
-
         film_name = request.POST['film_name']
         film_date = request.POST['film_date']
 
-        #-20230308
-
-        url = env('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"+film_date+"/"
+        url = os.environ.get('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"+film_date+"/"
 
         print(url)
 
@@ -39,7 +34,6 @@ def getFilmDataCinema(request):
         nom_ubi = [span.find('h3').text for span in soup.findAll('span', {'class': 'stprov'})]
         codis_ubis = [span['rel'] for span in soup.findAll('span', {'class': 'stprov'})]
         film_id = soup.find('div', {'id': 'showtimes'})['rel']
-
 
         data = dict(zip(nom_ubi, codis_ubis))
         data['film_id'] = film_id
@@ -330,7 +324,7 @@ def getProviders(request):
         api_requests = requests.get(url, headers=headers)
 
         try:
-            api = json.loads(api_requests.content)
+            api = json.loads(api_requests.content)           
         except Exception as e:
             api = {"error": str(e)}
 
