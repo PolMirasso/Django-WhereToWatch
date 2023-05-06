@@ -24,7 +24,7 @@ def getFilmDataCinema(request):
         film_name = request.POST['film_name']
         film_date = request.POST['film_date']
 
-        url = os.environ.get('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"+film_date+"/"
+        url = os.environ.get('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"
 
         print(url)
 
