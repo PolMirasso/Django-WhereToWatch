@@ -35,14 +35,14 @@ class LoginAPI(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         user_name=user.username
-        user_age = user.data_user.age
+        user_nsfw = user.data_user.nsfw_content
         user_image_profile = user.data_user.image_profile.url
 
 
         login(request, user)
         temp_list=super(LoginAPI, self).post(request, format=None)
         temp_list.data["username"]=user_name
-        temp_list.data["age"]=user_age
+        temp_list.data["user_nsfw"]=user_nsfw
 
         print(user_image_profile)
 

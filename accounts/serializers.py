@@ -10,25 +10,25 @@ import random
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
-    age = serializers.IntegerField(source='data_user.age')
+    nsfw_content = serializers.IntegerField(source='data_user.nsfw_content')
     image_profile = serializers.ImageField(source='data_user.image_profile')
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'age', 'image_profile')
+        fields = ('id', 'username', 'email', 'nsfw_content', 'image_profile')
 
 # Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
-    age = serializers.IntegerField(write_only=True)
+    nsfw_content = serializers.IntegerField(write_only=True)
     image_profile = serializers.ImageField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'age', 'image_profile')
+        fields = ('id', 'username', 'email', 'password', 'nsfw_content', 'image_profile')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        age = validated_data.pop('age')
+        nsfw_content = validated_data.pop('nsfw_content')
         image_profile = validated_data.pop('image_profile')
         user = User.objects.create_user(**validated_data)
 
@@ -43,5 +43,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         # with open(path, 'wb') as f:
         #     f.write(image_profile.read())
 
-        data_user.objects.create(user=user, age=age, image_profile=image_profile)
+        data_user.objects.create(user=user, nsfw_content=nsfw_content, image_profile=image_profile)
         return user

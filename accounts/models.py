@@ -7,7 +7,7 @@ class data_user(models.Model):
 
 
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    age = models.IntegerField()
+    nsfw_content = models.BooleanField(blank=True)
     image_profile = models.ImageField(blank=True)
 
     def __str__(self):
