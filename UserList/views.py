@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from knox.auth import TokenAuthentication
 from rest_framework import status
 from .models import UserLists
+from .serializers import UserListsSerializer
 # Create your views here.
 
 class createList(APIView):
@@ -25,5 +26,23 @@ class createList(APIView):
             user_list.save()
 
             return Response({'success': 'Los datos se han guardado correctamente.'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'El token es inválido.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class getUserLists(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        # Verificar si el token es válido
+        if request.auth:
+            # Obtener todas las listas creadas por el usuario autenticado
+            user_lists = UserLists.objects.filter(author=request.user)
+            
+            # Serializar las listas obtenidas para poder enviarlas como respuesta
+            serializer = UserListsSerializer(user_lists, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'El token es inválido.'}, status=status.HTTP_401_UNAUTHORIZED)

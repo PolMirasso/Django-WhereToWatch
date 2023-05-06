@@ -6,8 +6,8 @@ from django.db.models import JSONField
 
 class UserLists(models.Model):
     
-    list_name = models.CharField(max_length=50, null=False, unique=True)
-    list_id = models.IntegerField()
+    list_name = models.CharField(max_length=50, null=False)
+    list_id = models.AutoField(primary_key=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     list_content = JSONField(default=list)
@@ -19,10 +19,8 @@ class UserLists(models.Model):
         # Agregar una clave primaria compuesta para author y list_id
         # Esto garantiza que cada author tenga un list_id único
         constraints = [
-            models.UniqueConstraint(fields=['author', 'list_id'], name='unique_list_id'),
-            models.UniqueConstraint(fields=['list_id'], name='unique_list_id2')
+            models.UniqueConstraint(fields=['author', 'list_id'], name='unique_list_id')
         ]
 
     def __str__(self):
         return self.list_name
-        
