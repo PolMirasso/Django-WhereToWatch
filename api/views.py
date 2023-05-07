@@ -8,6 +8,8 @@ import json
 import environ
 from pathlib import Path
 import os
+import urllib.parse
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # reading .env file
@@ -21,23 +23,52 @@ environ.Env.read_env(env_file)
 
 def getFilmDataCinema(request):
     if request.method == 'POST':
+
+
         film_name = request.POST['film_name']
-        film_date = request.POST['film_date']
+        # film_date = request.POST['film_date']
 
-        url = os.environ.get('Scraping_URL')+"peliculas/"+film_name+"/cartelera/"
-        print(url)
+        searchUrl = os.environ.get('Scraping_URL')+"/ajax/_buscar/"
 
-        r = requests.get(url)
+        form_data = {'queryString': film_name}
+
+        search_r = requests.post(searchUrl,data=form_data)
+        search_soup = bs(search_r.content, features="html.parser")
+
+        h2_pelis = search_soup.find('h2', text='Películas')
+        film_url = h2_pelis.find_next_sibling('a')['href']
+     
+        film_url += "cartelera/"
+        # +film_date+"/"
+
+
+        r = requests.get(film_url)
         soup = bs(r.content, features="html.parser")
 
-        nom_ubi = [span.find('h3').text for span in soup.findAll('span', {'class': 'stprov'})]
-        codis_ubis = [span['rel'] for span in soup.findAll('span', {'class': 'stprov'})]
-        film_id = soup.find('div', {'id': 'showtimes'})['rel']
+        ul_element = soup.find('ul', {'class': 'cart-nav'})
 
-        data = dict(zip(nom_ubi, codis_ubis))
-        data['film_id'] = film_id
+        film_id_poster = soup.find('img', {'height': '513'})['src']
+        film_id_poster = film_id_poster.split(os.environ.get('Scraping_URL')+'/carteles/fondos/')[1]
+        film_id_poster = film_id_poster.split('/')[1]
+        film_id = film_id_poster.split('-')[0]
 
-        json_obj = json.dumps(data, ensure_ascii=False)
+        datos_dict = {}
+        for a_element in soup.select('li > a.prov'):
+            prov_nombre = a_element.text
+            ciudad_dict = {}
+            ul_element = a_element.find_next_sibling('ul')
+            if ul_element:
+                for li_element in ul_element.select('li.c-cartelera'):
+                    ciudad_id = li_element['data-id']
+                    ciudad_nombre = li_element.text.strip()
+                    ciudad_dict[ciudad_id] = ciudad_nombre
+            datos_dict[prov_nombre] = ciudad_dict
+
+
+        datos_dict['film_id'] = film_id
+
+
+        json_obj = json.dumps(datos_dict, ensure_ascii=False)
 
         return HttpResponse(json_obj)
 
@@ -46,66 +77,33 @@ def getCinemaData(request):
 
     if request.method == 'POST':
         
-
         film_id = request.POST['film_id']
         idprov = request.POST['idprov']
-        nameprov = request.POST['nameprov']
-        date = request.POST['date'] # ex 2023-03-08
+        date = request.POST['date']
 
+        url = env('Scraping_URL')+"/ajax/_cargar_cines/"
+        form_data = {'id': idprov, 'fecha': date, 'idp': film_id}
 
-        dades_pelicules = []
+        r = requests.post(url, data=form_data)
 
-        url = env('Scraping_URL')+"controlador/films/_filmlistingscities.php?idprov="+idprov+"&fecha="+date+"&idpeli="+film_id
-        
-        
-        r = requests.get(url)
         soup = bs(r.content, features="html.parser")
 
-        nom_provincies = [span.find('h4').text for span in soup.findAll('span', {'class': 'stcity'})]
-        
-        nom_provincies_filtered = [s.split(' (')[0] for s in nom_provincies]
+        div_elements = soup.find_all('div', {'class': 'citem'})
 
-        idcity = [span['rel'] for span in soup.findAll('span', {'class': 'stcity'})]
+        datos_list = []
+        for div_element in div_elements:
+            cine = div_element.find('span', {'class': 'name'}).text
+            try:
+                hora = div_element.find('span', {'class': 'time'}).text
+            except AttributeError:
+                hora = div_element.find('span', {'class': 'buy'}).text
+            datos_list.append({'cine': cine, 'hora': hora})
 
-
-        for j in range(len(nom_provincies_filtered)):
-
-
-
-            url3 = env('Scraping_URL')+"controlador/films/_filmlistingscinemas.php?idcity="+idcity[j]+"&fecha="+date+"&idpeli="+film_id
-
-            r3 = requests.get(url3)
-            soup3 = bs(r3.content, features="html.parser")
-
-
-            div_infocine = [div for div in soup3.findAll('div', {'class': 'wrapshowtimes'})]
-
-            values_array = [nom_provincies_filtered[j]]
-
-            for div in div_infocine:
-                values = div.text.strip().split('\n\n\n\n')
-
-                address = nameprov +' '+ values[0]
-
-                print(address)
-
-                values_hours = []
-
-                for v in values:
-                    mod_hours = v.replace('\n\n\n',',')
-                    mod_hours = mod_hours.replace('\n','')
-
-                    values_hours.append(mod_hours)
-
-                values_array.append(values_hours)
-
-            dades_pelicules.append(values_array)
-
-        json_obj = json.dumps(dades_pelicules, ensure_ascii=False)
+        json_obj = json.dumps(datos_list, ensure_ascii=False)
 
         return HttpResponse(json_obj)
 
-
+      
 
 def getAllData(request):
 
