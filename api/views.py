@@ -88,16 +88,21 @@ def getCinemaData(request):
 
         soup = bs(r.content, features="html.parser")
 
+
         div_elements = soup.find_all('div', {'class': 'citem'})
 
         datos_list = []
         for div_element in div_elements:
             cine = div_element.find('span', {'class': 'name'}).text
-            try:
-                hora = div_element.find('span', {'class': 'time'}).text
-            except AttributeError:
-                hora = div_element.find('span', {'class': 'buy'}).text
-            datos_list.append({'cine': cine, 'hora': hora})
+            horas_span = div_element.find_all('span', {'class': ['time', 'buy']})
+            horas = []
+            for hora_span in horas_span:
+                horas.append(hora_span.text)
+            if len(horas) == 1:
+                datos_list.append({'cine': cine, 'hora': horas[0]})
+            else:
+                datos_list.append({'cine': cine, 'hora': horas[:-1]})
+
 
         json_obj = json.dumps(datos_list, ensure_ascii=False)
 
