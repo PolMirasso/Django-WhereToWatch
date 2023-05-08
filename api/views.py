@@ -88,16 +88,21 @@ def getCinemaData(request):
 
         soup = bs(r.content, features="html.parser")
 
+
         div_elements = soup.find_all('div', {'class': 'citem'})
 
         datos_list = []
         for div_element in div_elements:
             cine = div_element.find('span', {'class': 'name'}).text
-            try:
-                hora = div_element.find('span', {'class': 'time'}).text
-            except AttributeError:
-                hora = div_element.find('span', {'class': 'buy'}).text
-            datos_list.append({'cine': cine, 'hora': hora})
+            horas_span = div_element.find_all('span', {'class': ['time', 'buy']})
+            horas = []
+            for hora_span in horas_span:
+                horas.append(hora_span.text)
+            if len(horas) == 1:
+                datos_list.append({'cine': cine, 'hora': horas[0]})
+            else:
+                datos_list.append({'cine': cine, 'hora': horas[:-1]})
+
 
         json_obj = json.dumps(datos_list, ensure_ascii=False)
 
@@ -410,4 +415,31 @@ def getMoviesByGenre(request):
             api = {"error": str(e)}
 
         return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+
+
+def getFilmTitleAndImage(request):
+
+    if request.method == 'POST':
+
+        list_content = request.POST['list_content']
+        language = request.POST['language']
+
+        json_list_content = json.loads(list_content)
+
+        list_title_image = []
+
+        for list_film in json_list_content:
+            if(list_film['type'] == '0'):
+                url = env("API_URL")+"/3/movie/"+list_film['id']+"?api_key="+env('API_KEY')+"&language="+language
+                
+                headers = {'Accept': 'application/json'}
+                api_requests = requests.get(url, headers=headers)
+
+                try:
+                    api = json.loads(api_requests.content)
+                    movies = [{"film_id": api["id"], "title": api["title"], "vote_average": api["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    list_title_image.append(movies)
+                except Exception as e:
+                    api = {"error": str(e)}
+
+        return JsonResponse(list_title_image,safe=False,json_dumps_params={'ensure_ascii':False})
