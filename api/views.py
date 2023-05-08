@@ -104,77 +104,6 @@ def getCinemaData(request):
         return HttpResponse(json_obj)
 
       
-
-def getAllData(request):
-
-
-    url = env('Scraping_URL')+"peliculas/creed-3/cartelera/20230308/"
-
-    r = requests.get(url)
-    soup = bs(r.content, features="html.parser")
-    idpelicula = soup.find('div', {'id': 'showtimes'})['rel']
-
-
-    codis_ubis = [span['rel'] for span in soup.findAll('span', {'class': 'stprov'})]
-    nom_ubi = [span.find('h3').text for span in soup.findAll('span', {'class': 'stprov'})]
-
-
-    dades_pelicules = []
-
-    for i in range(len(codis_ubis)):
-
-        dades_pelicules.append(nom_ubi[i])
-
-
-        url2 = env('Scraping_URL')+"controlador/films/_filmlistingscities.php?idprov="+codis_ubis[i]+"&fecha=2023-03-08&idpeli="+idpelicula
-        
-        print("url: "+ url2)
-        
-        r2 = requests.get(url2)
-        soup2 = bs(r2.content, features="html.parser")
-
-        nom_provincies = [span.find('h4').text for span in soup2.findAll('span', {'class': 'stcity'})]
-        
-        nom_provincies_filtered = [s.split(' (')[0] for s in nom_provincies]
-
-        idcity = [span['rel'] for span in soup2.findAll('span', {'class': 'stcity'})]
-
-
-        for j in range(len(nom_provincies_filtered)):
-
-
-
-            url3 = env('Scraping_URL')+"/controlador/films/_filmlistingscinemas.php?idcity="+idcity[j]+"&fecha=2023-03-08&idpeli="+idpelicula
-
-            print("url3: "+ url3)
-
-            r3 = requests.get(url3)
-            soup3 = bs(r3.content, features="html.parser")
-
-
-            div_infocine = [div for div in soup3.findAll('div', {'class': 'wrapshowtimes'})]
-
-            values_array = [nom_provincies_filtered[j]]
-
-            for div in div_infocine:
-                values = div.text.strip().split('\n\n\n\n')
-
-                values_hours = []
-
-                for v in values:
-                    mod_hours = v.replace('\n\n\n',',')
-                    mod_hours = mod_hours.replace('\n','')
-
-                    values_hours.append(mod_hours)
-
-                values_array.append(values_hours)
-
-            dades_pelicules.append(values_array)
-
-
-    json_list = list(dades_pelicules)   
-    return JsonResponse(json_list,safe=False,json_dumps_params={'ensure_ascii':False})
-
 #API Manager
 
 def getTopRatedFilms(request):
@@ -266,6 +195,27 @@ def getFilmData(request):
         language = request.POST['language']
 
         url = env("API_URL")+"/3/movie/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+    
+
+def getSeriesData(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/tv/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
 
         headers = {'Accept': 'application/json'}
 
