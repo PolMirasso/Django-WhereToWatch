@@ -465,4 +465,26 @@ def getMoviesByGenre(request):
             api = {"error": str(e)}
 
         return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+
+
+def getFilmTitleAndImage(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/movie/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": api["id"], "title": api["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+            api = movies
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})

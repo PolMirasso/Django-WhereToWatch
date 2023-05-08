@@ -17,4 +17,5 @@ urlpatterns = [
     path('getUpcomingFilms/', views.getUpcomingFilms, name="getUpcomingFilms"),
     path('getGenres/', views.getGenres, name="getGenres"),
     path('getMoviesByGenre/', views.getMoviesByGenre, name="getMoviesByGenre"),
+    path('getFilmTitleAndImage/', views.getFilmTitleAndImage, name="getFilmTitleAndImage"),
 ]
