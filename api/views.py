@@ -475,7 +475,6 @@ def getFilmTitleAndImage(request):
         language = request.POST['language']
 
         json_list_content = json.loads(list_content)
-        print(json_list_content)
 
         list_title_image = []
 
@@ -488,7 +487,7 @@ def getFilmTitleAndImage(request):
 
                 try:
                     api = json.loads(api_requests.content)
-                    movies = [{"film_id": api["id"], "title": api["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    movies = [{"film_id": api["id"], "title": api["title"], "vote_average": api["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
                     list_title_image.append(movies)
                 except Exception as e:
                     api = {"error": str(e)}
