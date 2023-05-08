@@ -471,20 +471,26 @@ def getFilmTitleAndImage(request):
 
     if request.method == 'POST':
 
-        movie_id = request.POST['movie_id']
+        list_content = request.POST['list_content']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+        json_list_content = json.loads(list_content)
+        print(json_list_content)
 
-        headers = {'Accept': 'application/json'}
+        list_title_image = []
 
-        api_requests = requests.get(url, headers=headers)
+        for list_film in json_list_content:
+            if(list_film['type'] == '0'):
+                url = env("API_URL")+"/3/movie/"+list_film['id']+"?api_key="+env('API_KEY')+"&language="+language
+                
+                headers = {'Accept': 'application/json'}
+                api_requests = requests.get(url, headers=headers)
 
-        try:
-            api = json.loads(api_requests.content)
-            movies = [{"film_id": api["id"], "title": api["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
-            api = movies
-        except Exception as e:
-            api = {"error": str(e)}
+                try:
+                    api = json.loads(api_requests.content)
+                    movies = [{"film_id": api["id"], "title": api["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    list_title_image.append(movies)
+                except Exception as e:
+                    api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(list_title_image,safe=False,json_dumps_params={'ensure_ascii':False})
