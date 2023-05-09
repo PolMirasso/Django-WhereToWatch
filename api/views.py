@@ -479,7 +479,7 @@ def getSeriesSimilars(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["name"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
+            movies = [{"film_id": movie["id"], "name": movie["name"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], 
                     "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
                     "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
                     for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
