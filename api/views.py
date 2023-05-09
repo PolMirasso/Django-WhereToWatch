@@ -222,7 +222,7 @@ def getSeriesData(request):
 
         url = env("API_URL")+"/3/tv/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
 
-        headers = {'Accept': 'application/json'}º
+        headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
 
