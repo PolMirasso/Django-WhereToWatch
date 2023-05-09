@@ -10,6 +10,7 @@ urlpatterns = [
     path('getPopularFilms/', views.getPopularFilms, name="getPopularFilms"),
     path('getSimilarMovie/', views.getSimilarMovie, name="getSimilarMovie"),
     path('getSeriesData/', views.getSeriesData, name="getSeriesData"),
+    path('getSeriesProviders/', views.getSeriesProviders, name="getSeriesProviders"),
     path('getProviders/', views.getProviders, name="getProviders"),
     path('getAlternativeTitles/', views.getAlternativeTitles, name="getAlternativeTitles"),
     path('getMovieRecommendations/', views.getMovieRecommendations, name="getMovieRecommendations"),
