@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from .models import data_user
 import os
@@ -9,6 +10,8 @@ import string
 import random
 
 # User Serializer
+
+
 class UserSerializer(serializers.ModelSerializer):
     nsfw_content = serializers.IntegerField(source='data_user.nsfw_content')
     image_profile = serializers.ImageField(source='data_user.image_profile')
@@ -18,13 +21,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'nsfw_content', 'image_profile')
 
 # Register Serializer
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     nsfw_content = serializers.IntegerField(write_only=True)
     image_profile = serializers.ImageField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'nsfw_content', 'image_profile')
+        fields = ('id', 'username', 'email', 'password',
+                  'nsfw_content', 'image_profile')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -43,5 +49,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         # with open(path, 'wb') as f:
         #     f.write(image_profile.read())
 
-        data_user.objects.create(user=user, nsfw_content=nsfw_content, image_profile=image_profile)
+        data_user.objects.create(
+            user=user, nsfw_content=nsfw_content, image_profile=image_profile)
         return user
+
+# Change Password Serializer
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
