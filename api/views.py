@@ -490,7 +490,7 @@ def getSeriesSimilars(request):
         movie_id = request.POST['movie_id']
         #language = request.POST['language']
 
-        url= env("API_URL")+"/3/tv/"+movie_id+"/recommendations/providers?api_key="+env('API_KEY')
+        url= env("API_URL")+"/3/tv/"+movie_id+"/recommendations?api_key="+env('API_KEY')
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
