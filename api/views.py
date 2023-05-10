@@ -419,7 +419,19 @@ def getFilmTitleAndImage(request):
                     list_title_image.append(movies)
                 except Exception as e:
                     api = {"error": str(e)}
+            else:
+                url = env("API_URL")+"/3/tv/"+list_film['id']+"?api_key="+env('API_KEY')+"&language="+language
+                headers = {'Accept': 'application/json'}
+                api_requests = requests.get(url, headers=headers)
 
+                
+                try:
+                    api = json.loads(api_requests.content)
+                    movies = [{"film_id": api["id"], "title": api["name"],'type':list_film['type'] , "vote_average": api["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    list_title_image.append(movies)
+                except Exception as e:
+                    api = {"error": str(e)}
+                
         return JsonResponse(list_title_image,safe=False,json_dumps_params={'ensure_ascii':False})
     
 #API Series Manager
