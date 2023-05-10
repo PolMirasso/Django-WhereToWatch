@@ -129,3 +129,49 @@ class removeFromListContent(APIView):
 
          else:
              return Response({'error': 'El token es inválido.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class updateListName(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if request.auth:
+
+            list_id = request.POST.get('list_id')
+
+            try:
+                user_list = UserLists.objects.get(list_id=list_id, author=request.user)
+                new_name = request.POST['new_name']
+                user_list.list_name = new_name
+                user_list.save()
+                return Response({'success': 'El nombre de la lista se ha actualizado correctamente.'})
+            except UserLists.DoesNotExist:
+                return Response({'error': 'La lista no existe.'}, status=status.HTTP_404_NOT_FOUND)
+            
+        else:
+            return Response({'error': 'El token es inválido.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class deleteList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # Verificar si el token es válido
+
+    def post(self, request, *args, **kwargs):
+
+        if request.auth:
+
+            list_id = request.POST.get('list_id')
+
+
+            try:
+                user_list = UserLists.objects.get(list_id=list_id, author=request.user)
+                user_list.delete()
+                return Response({'success': 'La lista se ha eliminado correctamente.'})
+            except UserLists.DoesNotExist:
+                return Response({'error': 'La lista no existe.'}, status=status.HTTP_404_NOT_FOUND)
+                
+        else:
+            return Response({'error': 'El token es inválido.'}, status=status.HTTP_401_UNAUTHORIZED)
