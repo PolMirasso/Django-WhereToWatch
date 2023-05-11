@@ -9,7 +9,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ChangePasswordSerializer
+# from .serializers import ChangePasswordSerializer
 
 
 # Register API
