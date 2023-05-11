@@ -56,14 +56,3 @@ class RegisterSerializer(serializers.ModelSerializer):
         data_user.objects.create(
             user=user, nsfw_content=nsfw_content, image_profile=image_profile, description=description)
         return user
-
-# Change Password Serializer
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate_new_password(self, value):
-        validate_password(value)
-        return value
