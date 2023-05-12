@@ -21,13 +21,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'nsfw_content',
                   'image_profile', 'description')
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
+        instance.description = validated_data.get(
+            'description', instance.description)
+        instance.save()
+        return instance
+
 # Register Serializer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     nsfw_content = serializers.IntegerField(write_only=True)
     image_profile = serializers.ImageField(write_only=True)
-    description = serializers.CharField(write_only=True)
+    # description = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -50,6 +58,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         image_profile = validated_data.pop('image_profile')
         description = validated_data.pop('description')
 
+        # description = validated_data.pop('description')
         user = User.objects.create_user(**validated_data)
 
         # Rename the image file to the user's ID and random string
@@ -64,7 +73,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         #     f.write(image_profile.read())
 
         data_user.objects.create(
-            user=user, nsfw_content=nsfw_content, image_profile=image_profile, description=description)
+            user=user, nsfw_content=nsfw_content, image_profile=image_profile,)
         return user
 
 class ChangePasswordSerializer(serializers.Serializer):

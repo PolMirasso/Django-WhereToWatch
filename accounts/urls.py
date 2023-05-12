@@ -1,4 +1,4 @@
-from .views import RegisterAPI, LoginAPI, VerifyTokenView
+from .views import RegisterAPI, LoginAPI, VerifyTokenView, EditProfileView
 from knox import views as knox_views
 from django.urls import path
 from . import views
@@ -13,5 +13,4 @@ urlpatterns = [
     path('api/changePassword/', views.changePassword.as_view(), name='changePassword'),
     path('api/changeNSFW/', views.changeNSFW.as_view(), name='changeNSFW'),
     path('api/changeUserImage/', views.changeUserImage.as_view(), name='changeUserImage'),
-
 ]
