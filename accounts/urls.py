@@ -1,4 +1,4 @@
-from .views import RegisterAPI, LoginAPI, VerifyTokenView, EditProfileView
+from .views import RegisterAPI, LoginAPI, VerifyTokenView
 from knox import views as knox_views
 from django.urls import path
 from . import views
