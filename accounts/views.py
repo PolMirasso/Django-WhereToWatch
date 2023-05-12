@@ -138,7 +138,8 @@ class changeUserImage(APIView):
                 id_str = str(request.user.id)
                 new_name = f"{id_str.join(random.choices(string.ascii_letters, k=8))}{ext}"
                 user_list.image_profile.save(new_name, new_image_profile)
-                return Response({'success': 'Imagen de perfil actualizada correctamente'})
+                image_url = user_list.image_profile.url
+                return Response({'success': 'Imagen de perfil actualizada correctamente', 'image_url': image_url})
             else:
                 return Response({'error': 'No se proporcionó una nueva imagen de perfil'}, status=400)
         else:
