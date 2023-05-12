@@ -52,6 +52,8 @@ def getFilmDataCinema(request):
         film_id = film_id_poster.split('-')[0]
 
         datos_dict = {}
+        datos_dict['film_id'] = film_id
+
         for a_element in soup.select('li > a.prov'):
             prov_nombre = a_element.text
             ciudad_dict = {}
@@ -63,7 +65,6 @@ def getFilmDataCinema(request):
                     ciudad_dict[ciudad_id] = ciudad_nombre
             datos_dict[prov_nombre] = ciudad_dict
 
-        datos_dict['film_id'] = film_id
 
         json_obj = json.dumps(datos_dict, ensure_ascii=False)
 
