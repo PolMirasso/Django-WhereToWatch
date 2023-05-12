@@ -24,7 +24,6 @@ environ.Env.read_env(env_file)
 def getFilmDataCinema(request):
     if request.method == 'POST':
 
-
         film_name = request.POST['film_name']
         # film_date = request.POST['film_date']
 
@@ -32,15 +31,14 @@ def getFilmDataCinema(request):
 
         form_data = {'queryString': film_name}
 
-        search_r = requests.post(searchUrl,data=form_data)
+        search_r = requests.post(searchUrl, data=form_data)
         search_soup = bs(search_r.content, features="html.parser")
 
         h2_pelis = search_soup.find('h2', text='Películas')
         film_url = h2_pelis.find_next_sibling('a')['href']
-     
+
         film_url += "cartelera/"
         # +film_date+"/"
-
 
         r = requests.get(film_url)
         soup = bs(r.content, features="html.parser")
@@ -48,7 +46,8 @@ def getFilmDataCinema(request):
         ul_element = soup.find('ul', {'class': 'cart-nav'})
 
         film_id_poster = soup.find('img', {'height': '513'})['src']
-        film_id_poster = film_id_poster.split(os.environ.get('Scraping_URL')+'/carteles/fondos/')[1]
+        film_id_poster = film_id_poster.split(
+            os.environ.get('Scraping_URL')+'/carteles/fondos/')[1]
         film_id_poster = film_id_poster.split('/')[1]
         film_id = film_id_poster.split('-')[0]
 
@@ -64,9 +63,7 @@ def getFilmDataCinema(request):
                     ciudad_dict[ciudad_id] = ciudad_nombre
             datos_dict[prov_nombre] = ciudad_dict
 
-
         datos_dict['film_id'] = film_id
-
 
         json_obj = json.dumps(datos_dict, ensure_ascii=False)
 
@@ -76,7 +73,7 @@ def getFilmDataCinema(request):
 def getCinemaData(request):
 
     if request.method == 'POST':
-        
+
         film_id = request.POST['film_id']
         idprov = request.POST['idprov']
         date = request.POST['date']
@@ -88,13 +85,13 @@ def getCinemaData(request):
 
         soup = bs(r.content, features="html.parser")
 
-
         div_elements = soup.find_all('div', {'class': 'citem'})
 
         datos_list = []
         for div_element in div_elements:
             cine = div_element.find('span', {'class': 'name'}).text
-            horas_span = div_element.find_all('span', {'class': ['time', 'buy']})
+            horas_span = div_element.find_all(
+                'span', {'class': ['time', 'buy']})
             horas = []
             for hora_span in horas_span:
                 horas.append(hora_span.text)
@@ -103,18 +100,16 @@ def getCinemaData(request):
             else:
                 datos_list.append({'cine': cine, 'hora': horas[:-1]})
 
-
         json_obj = json.dumps(datos_list, ensure_ascii=False)
 
         return HttpResponse(json_obj)
 
-      
-#API Films Manager
+
+# API Films Manager
 
 def getTopRatedFilms(request):
 
     if request.method == 'POST':
-
 
         num_page = request.POST['num_page']
         language = request.POST['language']
@@ -122,7 +117,8 @@ def getTopRatedFilms(request):
         print(num_page)
         print(language)
 
-        url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
+        url = env("API_URL")+"/3/movie/top_rated?api_key="+env('API_KEY') + \
+            "&language="+language+"&page="+num_page+"&region="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -130,12 +126,13 @@ def getTopRatedFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
-            
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def getPopularFilms(request):
@@ -147,22 +144,23 @@ def getPopularFilms(request):
 
         print(language)
 
-        url = env("API_URL")+"/3/movie/popular?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page
+        url = env("API_URL")+"/3/movie/popular?api_key=" + \
+            env('API_KEY')+"&language="+language+"&page="+num_page
 
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
 
-
-
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def getUpcomingFilms(request):
 
@@ -173,7 +171,8 @@ def getUpcomingFilms(request):
 
         print(language)
 
-        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY')+"&language="+language+"&page="+num_page+"&region="+language
+        url = env("API_URL")+"/3/movie/upcoming?api_key="+env('API_KEY') + \
+            "&language="+language+"&page="+num_page+"&region="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -181,15 +180,15 @@ def getUpcomingFilms(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
-                    "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
-                    "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
-                    for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "genre_ids": movie["genre_ids"], "release_date": movie["release_date"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
+                       "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])}
+                      for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def getFilmData(request):
@@ -199,7 +198,8 @@ def getFilmData(request):
         movie_id = request.POST['movie_id']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/movie/"+movie_id+"?api_key=" + \
+            env('API_KEY')+"&language="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -210,8 +210,9 @@ def getFilmData(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
 def getSimilarMovie(request):
 
     if request.method == 'POST':
@@ -220,23 +221,24 @@ def getSimilarMovie(request):
         language = request.POST['language']
         page_num = request.POST['page_num']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"/similar?api_key="+env('API_KEY')+"&language="+language+"&page="+page_num
+        url = env("API_URL")+"/3/movie/"+movie_id+"/similar?api_key=" + \
+            env('API_KEY')+"&language="+language+"&page="+page_num
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], "release_date": movie["release_date"],  
-                    "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
-                    "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
-                    for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
+            movies = [{"film_id": movie["id"], "title": movie["title"], "vote_average": movie["vote_average"], "genre_ids": movie["genre_ids"], "release_date": movie["release_date"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
+                       "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])}
+                      for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def getProviders(request):
 
@@ -245,29 +247,10 @@ def getProviders(request):
         movie_id = request.POST['movie_id']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"/watch/providers?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/movie/"+movie_id + \
+            "/watch/providers?api_key="+env('API_KEY')+"&language="+language
 
         print(url)
-
-        headers = {'Accept': 'application/json'}
-
-        api_requests = requests.get(url, headers=headers)
-
-        try:
-            api = json.loads(api_requests.content)           
-        except Exception as e:
-            api = {"error": str(e)}
-
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-
-
-def getAlternativeTitles(request):
-
-    if request.method == 'POST':
-
-        movie_id = request.POST['movie_id']
-      
-        url = env("API_URL")+"/3/movie/"+movie_id+"/alternative_titles?api_key="+env('API_KEY')
 
         headers = {'Accept': 'application/json'}
 
@@ -278,8 +261,30 @@ def getAlternativeTitles(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+def getAlternativeTitles(request):
+
+    if request.method == 'POST':
+
+        movie_id = request.POST['movie_id']
+
+        url = env("API_URL")+"/3/movie/"+movie_id + \
+            "/alternative_titles?api_key="+env('API_KEY')
+
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
 def getMovieRecommendations(request):
 
     if request.method == 'POST':
@@ -288,7 +293,8 @@ def getMovieRecommendations(request):
         page = request.POST['num_page']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"/recommendations?api_key="+env('API_KEY')+"&language="+language+"&page="+page
+        url = env("API_URL")+"/3/movie/"+movie_id+"/recommendations?api_key=" + \
+            env('API_KEY')+"&language="+language+"&page="+page
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
@@ -298,8 +304,8 @@ def getMovieRecommendations(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def getMovieVideos(request):
 
@@ -308,21 +314,22 @@ def getMovieVideos(request):
         movie_id = request.POST['movie_id']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id+"/videos?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/movie/"+movie_id + \
+            "/videos?api_key="+env('API_KEY')+"&language="+language
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"id": movie["id"], "name": movie["name"], "video": "https://youtu.be/"+movie["key"]} for movie in api["results"]]
+            movies = [{"id": movie["id"], "name": movie["name"],
+                       "video": "https://youtu.be/"+movie["key"]} for movie in api["results"]]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def getSearchResults(request):
 
@@ -331,25 +338,25 @@ def getSearchResults(request):
         movie_name = request.POST['movie_name']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/search/multi?api_key="+env('API_KEY')+"&language="+language+"&page=1&include_adult=false&query="+movie_name
+        url = env("API_URL")+"/3/search/multi?api_key="+env('API_KEY') + \
+            "&language="+language+"&page=1&include_adult=false&query="+movie_name
         print(url)
         headers = {'Accept': 'application/json'}
-       
+
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-        
-            movies = [{"id": movie["id"], "original_title": movie["title"] if "title" in movie else None, "original_name": movie["name"] if "name" in movie else None} for movie in api["results"]]
 
+            movies = [{"id": movie["id"], "poster_path":movie["logo_path"], "original_title": movie["title"]
+                       if "title" in movie else None, "original_name": movie["name"] if "name" in movie else None} for movie in api["results"]]
 
             api["results"]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def getGenres(request):
@@ -358,9 +365,10 @@ def getGenres(request):
 
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/genre/movie/list?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/genre/movie/list?api_key=" + \
+            env('API_KEY')+"&language="+language
         headers = {'Accept': 'application/json'}
-       
+
         api_requests = requests.get(url, headers=headers)
 
         try:
@@ -368,7 +376,7 @@ def getGenres(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def getMoviesByGenre(request):
@@ -379,20 +387,22 @@ def getMoviesByGenre(request):
         page = request.POST['num_page']
         genres_id = request.POST['genres_id']
 
-        url = env("API_URL")+"/3/discover/movie?api_key="+env('API_KEY')+"&with_genres="+genres_id+"&language="+language+"&page="+page
+        url = env("API_URL")+"/3/discover/movie?api_key="+env('API_KEY') + \
+            "&with_genres="+genres_id+"&language="+language+"&page="+page
         headers = {'Accept': 'application/json'}
-       
+
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["title"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["title"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
             api = movies
-         
+
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def getFilmTitleAndImage(request):
@@ -407,34 +417,39 @@ def getFilmTitleAndImage(request):
         list_title_image = []
 
         for list_film in json_list_content:
-            if(list_film['type'] == '0'):
-                url = env("API_URL")+"/3/movie/"+list_film['id']+"?api_key="+env('API_KEY')+"&language="+language
-                
+            if (list_film['type'] == '0'):
+                url = env("API_URL")+"/3/movie/" + \
+                    list_film['id']+"?api_key=" + \
+                    env('API_KEY')+"&language="+language
+
                 headers = {'Accept': 'application/json'}
                 api_requests = requests.get(url, headers=headers)
 
                 try:
                     api = json.loads(api_requests.content)
-                    movies = [{"film_id": api["id"], "title": api["title"],'type':list_film['type'] , "vote_average": api["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    movies = [{"film_id": api["id"], "title": api["title"], 'type':list_film['type'], "vote_average": api["vote_average"],
+                               "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]}]
                     list_title_image.append(movies)
                 except Exception as e:
                     api = {"error": str(e)}
             else:
-                url = env("API_URL")+"/3/tv/"+list_film['id']+"?api_key="+env('API_KEY')+"&language="+language
+                url = env("API_URL")+"/3/tv/" + \
+                    list_film['id']+"?api_key=" + \
+                    env('API_KEY')+"&language="+language
                 headers = {'Accept': 'application/json'}
                 api_requests = requests.get(url, headers=headers)
 
-                
                 try:
                     api = json.loads(api_requests.content)
-                    movies = [{"film_id": api["id"], "title": api["name"],'type':list_film['type'] , "vote_average": api["vote_average"], "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]} ]
+                    movies = [{"film_id": api["id"], "title": api["name"], 'type':list_film['type'], "vote_average": api["vote_average"],
+                               "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+api["poster_path"]}]
                     list_title_image.append(movies)
                 except Exception as e:
                     api = {"error": str(e)}
-                
-        return JsonResponse(list_title_image,safe=False,json_dumps_params={'ensure_ascii':False})
-    
-#API Series Manager
+
+        return JsonResponse(list_title_image, safe=False, json_dumps_params={'ensure_ascii': False})
+
+# API Series Manager
 
 
 def getSeriesData(request):
@@ -444,7 +459,8 @@ def getSeriesData(request):
         movie_id = request.POST['movie_id']
         language = request.POST['language']
 
-        url = env("API_URL")+"/3/tv/"+movie_id+"?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/tv/"+movie_id+"?api_key=" + \
+            env('API_KEY')+"&language="+language
 
         headers = {'Accept': 'application/json'}
 
@@ -455,16 +471,18 @@ def getSeriesData(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
 def getSeriesProviders(request):
 
     if request.method == 'POST':
 
         movie_id = request.POST['movie_id']
-        #language = request.POST['language']
+        # language = request.POST['language']
 
-        url= env("API_URL")+"/3/tv/"+movie_id+"/watch/providers?api_key="+env('API_KEY')
+        url = env("API_URL")+"/3/tv/"+movie_id + \
+            "/watch/providers?api_key="+env('API_KEY')
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
@@ -474,29 +492,30 @@ def getSeriesProviders(request):
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})
-    
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def getSeriesSimilars(request):
 
     if request.method == 'POST':
 
         movie_id = request.POST['movie_id']
-        #language = request.POST['language']
+        # language = request.POST['language']
 
-        url= env("API_URL")+"/3/tv/"+movie_id+"/recommendations?api_key="+env('API_KEY')
+        url = env("API_URL")+"/3/tv/"+movie_id + \
+            "/recommendations?api_key="+env('API_KEY')
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "name": movie["name"], "vote_average": movie["vote_average"],"genre_ids": movie["genre_ids"], 
-                    "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
-                    "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])} 
-                    for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
+            movies = [{"film_id": movie["id"], "name": movie["name"], "vote_average": movie["vote_average"], "genre_ids": movie["genre_ids"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2"+movie["poster_path"],
+                       "backdrop_path": "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces"+str(movie["backdrop_path"])}
+                      for index, movie in enumerate(api["results"]) if index < 5 and movie["backdrop_path"] is not None]
             api = movies
         except Exception as e:
             api = {"error": str(e)}
 
-        return JsonResponse(api,safe=False,json_dumps_params={'ensure_ascii':False})   
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})

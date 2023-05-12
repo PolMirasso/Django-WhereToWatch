@@ -59,3 +59,18 @@ class VerifyTokenView(APIView):
 
     def post(self, request, *args, **kwargs):
         return Response({'success': 'El token es válido.'})
+
+
+class EditProfileView(generics.RetrieveUpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(
+            user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
