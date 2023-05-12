@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from .models import data_user
 import os
 from django.conf import settings
-
+from django.core.exceptions import ValidationError
 
 import string
 import random
@@ -36,10 +35,21 @@ class RegisterSerializer(serializers.ModelSerializer):
                   'nsfw_content', 'image_profile', 'description')
         extra_kwargs = {'password': {'write_only': True}}
 
+
+    
     def create(self, validated_data):
+        email = validated_data.get('email')
+        if email is None:
+            raise serializers.ValidationError("El campo de correo electrónico es obligatorio.")
+
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError("Este email ya está registrado.")
+
+        
         nsfw_content = validated_data.pop('nsfw_content')
         image_profile = validated_data.pop('image_profile')
         description = validated_data.pop('description')
+
         user = User.objects.create_user(**validated_data)
 
         # Rename the image file to the user's ID and random string
@@ -55,4 +65,25 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         data_user.objects.create(
             user=user, nsfw_content=nsfw_content, image_profile=image_profile, description=description)
+        return user
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError("La nueva contraseña y la confirmación no coinciden.")
+        return attrs
+
+    def update(self, instance, validated_data):
+        user = instance.user
+
+        if not user.check_password(validated_data['old_password']):
+            raise serializers.ValidationError("La contraseña anterior es incorrecta.")
+
+        user.set_password(validated_data['new_password'])
+        user.save()
+
         return user
