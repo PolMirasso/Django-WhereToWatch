@@ -29,7 +29,7 @@ def getFilmDataCinema(request):
 
         searchUrl = os.environ.get('Scraping_URL')+"/ajax/_buscar/"
 
-        form_data = {'queryString': film_name.replace('Volumen ',r'Vol')}
+        form_data = {'queryString': film_name.replace('Volumen ', r'Vol')}
 
         search_r = requests.post(searchUrl, data=form_data)
         search_soup = bs(search_r.content, features="html.parser")
@@ -348,11 +348,11 @@ def getSearchResults(request):
         try:
             api = json.loads(api_requests.content)
 
-            movies = [{"id": movie["id"], "poster_path":movie["logo_path"], "original_title": movie["title"]
-                       if "title" in movie else None, "original_name": movie["name"] if "name" in movie else None} for movie in api["results"]]
+            # movies = [{"id": movie["id"], "poster_path":movie["logo_path"], "original_title": movie["title"]
+            #         if "title" in movie else None, "original_name": movie["name"] if "name" in movie else None} for movie in api["results"]]
 
             api["results"]
-            api = movies
+            # api = movies
         except Exception as e:
             api = {"error": str(e)}
 
