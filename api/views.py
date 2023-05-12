@@ -29,7 +29,7 @@ def getFilmDataCinema(request):
 
         searchUrl = os.environ.get('Scraping_URL')+"/ajax/_buscar/"
 
-        form_data = {'queryString': film_name}
+        form_data = {'queryString': film_name.replace('Volumen ',r'Vol')}
 
         search_r = requests.post(searchUrl, data=form_data)
         search_soup = bs(search_r.content, features="html.parser")
