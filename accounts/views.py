@@ -108,7 +108,7 @@ class changeNSFW(APIView):
                 if new_nsfw_content:
                     user_list = data_user.objects.get(user=request.user)
 
-                    if new_nsfw_content == 1 or new_nsfw_content == 0:
+                    if new_nsfw_content == "1" or new_nsfw_content == "0":
                         user_list.nsfw_content = new_nsfw_content
                         user_list.save()
                         return Response({'success': 'Descripción actualizada correctamente'})
