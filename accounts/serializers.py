@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     nsfw_content = serializers.IntegerField(write_only=True)
     image_profile = serializers.ImageField(write_only=True)
-    # description = serializers.CharField(write_only=True)
+    description = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
