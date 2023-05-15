@@ -338,9 +338,10 @@ def getSearchResults(request):
 
         movie_name = request.POST['movie_name']
         language = request.POST['language']
+        nsfw_content = request.POST['nsfw_content']
 
         url = env("API_URL")+"/3/search/multi?api_key="+env('API_KEY') + \
-            "&language="+language+"&page=1&include_adult=false&query="+movie_name
+            "&language="+language+"&page=1&include_adult="+nsfw_content+"&query="+movie_name
         print(url)
         headers = {'Accept': 'application/json'}
 
