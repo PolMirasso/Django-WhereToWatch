@@ -9,6 +9,7 @@ import environ
 from pathlib import Path
 import os
 import urllib.parse
+from datetime import datetime, timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,8 +80,15 @@ def getCinemaData(request):
         idprov = request.POST['idprov']
         date = request.POST['date']
 
-        url = env('Scraping_URL')+"/ajax/_cargar_cines/"
-        form_data = {'id': idprov, 'fecha': date, 'idp': film_id}
+        date_obj = datetime.strptime(date, "%Y-%m-%d")
+
+        next_day = date_obj + timedelta(days=1)
+
+        next_day_str = next_day.strftime("%Y-%m-%d")
+
+        url = env('Scraping_URL') + "/ajax/_cargar_cines/"
+        form_data = {'id': idprov, 'fecha': next_day_str, 'idp': film_id}
+
 
         r = requests.post(url, data=form_data)
 
