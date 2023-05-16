@@ -313,10 +313,8 @@ def getMovieVideos(request):
     if request.method == 'POST':
 
         movie_id = request.POST['movie_id']
-        language = request.POST['language']
 
-        url = env("API_URL")+"/3/movie/"+movie_id + \
-            "/videos?api_key="+env('API_KEY')+"&language="+language
+        url = env("API_URL")+"/3/movie/"+movie_id +"/videos?api_key="+env('API_KEY')
         headers = {'Accept': 'application/json'}
 
         api_requests = requests.get(url, headers=headers)
