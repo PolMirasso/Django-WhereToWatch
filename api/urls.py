@@ -21,4 +21,6 @@ urlpatterns = [
     path('getGenres/', views.getGenres, name="getGenres"),
     path('getMoviesByGenre/', views.getMoviesByGenre, name="getMoviesByGenre"),
     path('getFilmTitleAndImage/', views.getFilmTitleAndImage, name="getFilmTitleAndImage"),
+    path('getSeriesGenres/', views.getSeriesGenres, name="getSeriesGenres"),
+    path('getSeriesByGenre/', views.getSeriesByGenre, name="getSeriesByGenre"),
 ]

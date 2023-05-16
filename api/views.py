@@ -521,3 +521,48 @@ def getSeriesSimilars(request):
             api = {"error": str(e)}
 
         return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+def getSeriesByGenre(request):
+
+    if request.method == 'POST':
+
+        language = request.POST['language']
+        page = request.POST['num_page']
+        genres_id = request.POST['genres_id']
+
+        url = env("API_URL")+"/3/discover/tv?api_key="+env('API_KEY') + \
+            "&with_genres="+genres_id+"&language="+language+"&page="+page
+        print(url)
+        
+        headers = {'Accept': 'application/json'}
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["name"],
+                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            api = movies
+
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
+
+def getSeriesGenres(request):
+
+    if request.method == 'POST':
+
+        language = request.POST['language']
+
+        url = env("API_URL")+"/3/genre/tv/list?api_key=" + \
+            env('API_KEY')+"&language="+language
+        headers = {'Accept': 'application/json'}
+
+        api_requests = requests.get(url, headers=headers)
+
+        try:
+            api = json.loads(api_requests.content)
+        except Exception as e:
+            api = {"error": str(e)}
+
+        return JsonResponse(api, safe=False, json_dumps_params={'ensure_ascii': False})
