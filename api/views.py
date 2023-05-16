@@ -91,15 +91,9 @@ def getCinemaData(request):
         datos_list = []
         for div_element in div_elements:
             cine = div_element.find('span', {'class': 'name'}).text
-            horas_span = div_element.find_all(
-                'span', {'class': ['time', 'buy']})
-            horas = []
-            for hora_span in horas_span:
-                horas.append(hora_span.text)
-            if len(horas) == 1:
-                datos_list.append({'cine': cine, 'hora': horas[0]})
-            else:
-                datos_list.append({'cine': cine, 'hora': horas[:-1]})
+            horas_span = div_element.find_all('span', {'class': ['time', 'buy']})
+            horas = [hora_span.text for hora_span in horas_span]
+            datos_list.append({'cine': cine, 'hora': horas})
 
         json_obj = json.dumps(datos_list, ensure_ascii=False)
 
