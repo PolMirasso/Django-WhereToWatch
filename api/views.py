@@ -556,7 +556,7 @@ def getSeriesByGenre(request):
                     movie_data = {
                         "film_id": movie["id"],
                         "vote_average": movie["vote_average"],
-                        "title": movie["title"],
+                        "title": movie["name"],
                         "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + poster_path
                     }
                     movies.append(movie_data)
