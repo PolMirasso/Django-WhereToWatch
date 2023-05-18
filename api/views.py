@@ -397,8 +397,17 @@ def getMoviesByGenre(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["title"],
-                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = []
+            for movie in api["results"]:
+                poster_path = movie["poster_path"]
+                if poster_path is not None:
+                    movie_data = {
+                        "film_id": movie["id"],
+                        "vote_average": movie["vote_average"],
+                        "title": movie["title"],
+                        "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + poster_path
+                    }
+                    movies.append(movie_data)
             api = movies
 
         except Exception as e:
@@ -539,8 +548,19 @@ def getSeriesByGenre(request):
 
         try:
             api = json.loads(api_requests.content)
-            movies = [{"film_id": movie["id"], "vote_average": movie["vote_average"], "title": movie["name"],
-                       "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+movie["poster_path"]} for movie in api["results"]]
+            movies = []
+            for movie in api["results"]:
+                poster_path = movie["poster_path"]
+
+                if poster_path is not None:
+                    movie_data = {
+                        "film_id": movie["id"],
+                        "vote_average": movie["vote_average"],
+                        "title": movie["title"],
+                        "poster_path": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + poster_path
+                    }
+                    movies.append(movie_data)
+
             api = movies
 
         except Exception as e:
