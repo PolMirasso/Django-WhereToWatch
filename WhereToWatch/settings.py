@@ -72,10 +72,7 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'https://wheretowatch.web.app/'
-]
+CORS_ALLOWED_ORIGINS = ['*']
 
 ROOT_URLCONF = 'WhereToWatch.urls'
 
